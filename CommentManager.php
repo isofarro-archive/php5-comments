@@ -13,7 +13,8 @@ class CommentManager {
 	}
 	
 	public function getComment($comment_id) {
-	
+		$this->initStorage();
+		return $this->storage->getComment($comment_id);
 	}
 	
 	public function deleteComment($comment_id) {

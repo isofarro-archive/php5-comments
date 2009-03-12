@@ -45,6 +45,13 @@ class XmlCommentStorage {
 		return false;
 	}
 	
+	public function getComment($comment_id) {
+		$xpath = new DOMXPath($this->dom);
+		
+		$commentEls = $xpath->query("*/comment[@comment_id='$comment_id']");
+		print_r($commentEls);
+	}
+	
 	
 	
 	protected function load() {
