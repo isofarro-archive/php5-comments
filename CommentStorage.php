@@ -21,11 +21,28 @@ class XmlCommentStorage {
 	}
 	
 	public function addComment($comment) {
-		//$el = $this->dom->createElement('comment');
-		foreach($comment as $name=>value) {
+		$el = $this->dom->createElement('comment');
+		foreach($comment as $name=>$value) {
 			echo "INFO $name: $value\n";
-		
+			
+			// TODO: check if valid QName			
+			
+			if (strpos($name, '_id')>0) {
+				// Treat as an attribute
+				$el->setAttribute($name, $value);
+			} else {
+				// Treat as an element
+				$dataEl = $this->dom->createElement($name);
+				$dataEl->appendChild($this->dom->createTextNode($value));
+				$el->appendChild($dataEl);
+			}
 		}
+		
+		// Add the comment node to document
+		// TODO: Check there's at least one attribute or element
+		$this->dom->documentElement->appendChild($el);
+		
+		return false;
 	}
 	
 	

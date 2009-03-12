@@ -5,6 +5,10 @@ class CommentManager {
 
 	public function addComment($comment) {
 		$this->initStorage();
+		
+		// TODO: Add processing logic before saving
+		
+		return $this->storage->addComment($comment);
 				
 	}
 	
