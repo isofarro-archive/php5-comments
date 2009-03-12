@@ -21,7 +21,11 @@ class XmlCommentStorage {
 	}
 	
 	public function addComment($comment) {
-
+		//$el = $this->dom->createElement('comment');
+		foreach($comment as $name=>value) {
+			echo "INFO $name: $value\n";
+		
+		}
 	}
 	
 	
