@@ -1,0 +1,9 @@
+
+# Ignore editing backups
+*~
+
+# Ignore comments.xml
+comments.xml
+
+
+
