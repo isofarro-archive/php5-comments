@@ -79,7 +79,7 @@ class XmlCommentStorage {
 		}
 
 
-		print_r($comment);
+		//print_r($comment);
 		return $comment;
 	}
 	
@@ -94,7 +94,7 @@ class XmlCommentStorage {
 				$attrSel[] = "@{$name}='$value'";
 			} else {
 				// element selector
-				$elSel[] = "/$name = '$value'";
+				$elSel[] = "/$name"; //	 = '$value'";
 			}
 		}
 		
@@ -102,7 +102,17 @@ class XmlCommentStorage {
 		if (!empty($attrSel)) {
 			$selector .= '[' . implode(' ', $attrSel) . ']';
 		}
+		
+		if (!empty($elSel)) {
+			print_r($elSel);
+			$selector .=  $elSel[0];
+		}
 		echo "SELECTOR: $selector\n";
+
+		$xpath      = new DOMXPath($this->dom);
+		$commentEls = $xpath->query($selector);
+		echo "Number of comments: ", $commentEls->length, "\n";
+
 
 	}
 	
