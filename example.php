@@ -21,4 +21,6 @@ $c2 = $comments->getComments(array(
 	'created' => $c1['created']
 ));
 
+print_r($c2);
+
 ?>

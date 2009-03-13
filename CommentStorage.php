@@ -46,6 +46,9 @@ class XmlCommentStorage {
 		return false;
 	}
 	
+	/**
+	* Get a single comment by its comment_id
+	**/
 	public function getComment($comment_id) {
 		$xpath = new DOMXPath($this->dom);
 		
@@ -62,12 +65,73 @@ class XmlCommentStorage {
 		}
 		
 		// Return just the first element
-		$commentEl =  $commentEls->item(0);
-		//echo $commentEl->textContent;
+		//echo "INFO: One comment found\n";
+		return $this->commentToArray($commentEls->item(0));
+	}
+	
+	/**
+	* get multiple comments by a query. The query is an array
+	* of field matches, and this method returns all comments
+	* that match all the conditions
+	**/
+	public function getComments($query) {
+		// Create XPath selector for this query
+		$clause = array();
+
+		foreach($query as $name=>$value) {
+			// if the name ends with _id then its an attribute selector
+			if (preg_match('/_id$/', $name)) {
+				$clause[] = "@{$name}='$value'";
+			} else {
+				// element selector
+				$clause[] = "$name='$value'";;
+			}
+		}
 		
+		$selector = "/comments/comment";
+		if (!empty($clause)) {
+			$selector .= '[' . implode(' and ', $clause) . ']';
+		}
+		
+		//echo "SELECTOR: $selector\n";
+
+		$xpath      = new DOMXPath($this->dom);
+		$commentEls = $xpath->query($selector);
+		//echo "Number of comments: ", $commentEls->length, "\n";
+
+		if ($commentEls->length == 0) {
+			echo "INFO: No comments found\n";
+		} elseif ($commentEls->length==1) {
+			//echo "INFO: One comment found\n";
+			return $this->commentToArray($commentEls->item(0));
+		} else {
+			echo "INFO: Multiple comments found\n";
+			return $this->commentsToArray($commentEls);
+		}
+		return NULL;
+	}
+	
+	/**
+	* Returns a NodeList of comment elements as an array of comments
+	**/
+	protected function commentsToArray($commentEls) {
+		$comments = array();
+		
+		foreach($commentEls->childNodes as $commentEl) {
+			$comments[] = $this->commentToArray($commentEl);
+		}
+		
+		return $comments;
+	}	
+	
+	/**
+	* Returns one comment node as a comment array
+	**/
+	protected function commentToArray($commentEl) {
 		$comment = array();
 		
 		//Put the attributes in
+		echo $commentEl->nodeName;
 		foreach($commentEl->attributes as $attr) {
 			$comment[$attr->name] = $attr->value;
 		}
@@ -78,42 +142,7 @@ class XmlCommentStorage {
 			$comment[$child->nodeName] = $child->textContent;
 		}
 
-
-		//print_r($comment);
-		return $comment;
-	}
-	
-	public function getComments($query) {
-		// Create XPath selector for this query
-		$attrSel = array();
-		$elSel   = array();
-
-		foreach($query as $name=>$value) {
-			// if the name ends with _id then its an attribute selector
-			if (preg_match('/_id$/', $name)) {
-				$attrSel[] = "@{$name}='$value'";
-			} else {
-				// element selector
-				$elSel[] = "/$name"; //	 = '$value'";
-			}
-		}
-		
-		$selector = "/comments/comment";
-		if (!empty($attrSel)) {
-			$selector .= '[' . implode(' ', $attrSel) . ']';
-		}
-		
-		if (!empty($elSel)) {
-			print_r($elSel);
-			$selector .=  $elSel[0];
-		}
-		echo "SELECTOR: $selector\n";
-
-		$xpath      = new DOMXPath($this->dom);
-		$commentEls = $xpath->query($selector);
-		echo "Number of comments: ", $commentEls->length, "\n";
-
-
+		return $comment;	
 	}
 	
 	protected function load() {
