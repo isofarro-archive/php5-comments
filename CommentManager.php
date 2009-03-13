@@ -26,7 +26,8 @@ class CommentManager {
 	}
 
 	public function getComments($query) {
-	
+		echo "INFO: getComments\n";
+		return $this->storage->getComments($query);	
 	}
 
 	public function getUser($user_id) {

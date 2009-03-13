@@ -15,6 +15,10 @@ $comments = new CommentManager();
 //$comments->addComment($comment);
 
 $c1 = $comments->getComment('99');
+echo "c1 created: ", $c1['created'], "\n";
 
+$c2 = $comments->getComments(array(
+	'created' => $c1['created']
+));
 
 ?>

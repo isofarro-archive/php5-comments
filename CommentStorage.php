@@ -47,8 +47,6 @@ class XmlCommentStorage {
 	}
 	
 	public function getComment($comment_id) {
-		//echo "getComment from: ", $this->dom->saveXML();
-
 		$xpath = new DOMXPath($this->dom);
 		
 		$commentEls = $xpath->query("/comments/comment[@comment_id='$comment_id']");
@@ -85,7 +83,28 @@ class XmlCommentStorage {
 		return $comment;
 	}
 	
-	
+	public function getComments($query) {
+		// Create XPath selector for this query
+		$attrSel = array();
+		$elSel   = array();
+
+		foreach($query as $name=>$value) {
+			// if the name ends with _id then its an attribute selector
+			if (preg_match('/_id$/', $name)) {
+				$attrSel[] = "@{$name}='$value'";
+			} else {
+				// element selector
+				$elSel[] = "/$name = '$value'";
+			}
+		}
+		
+		$selector = "/comments/comment";
+		if (!empty($attrSel)) {
+			$selector .= '[' . implode(' ', $attrSel) . ']';
+		}
+		echo "SELECTOR: $selector\n";
+
+	}
 	
 	protected function load() {
 		if (file_exists($this->xmlFile)) {
