@@ -15,9 +15,9 @@ class XmlCommentStorage {
 	}
 	
 	public function __destruct() {
-		if (!is_null($this->dom)) {
-			$this->save();
-		}
+		//if (!is_null($this->dom)) {
+		//	$this->save();
+		//}
 	}
 	
 	public function addComment($comment) {
@@ -41,15 +41,48 @@ class XmlCommentStorage {
 		// Add the comment node to document
 		// TODO: Check there's at least one attribute or element
 		$this->dom->documentElement->appendChild($el);
+		$this->save();
 		
 		return false;
 	}
 	
 	public function getComment($comment_id) {
+		//echo "getComment from: ", $this->dom->saveXML();
+
 		$xpath = new DOMXPath($this->dom);
 		
-		$commentEls = $xpath->query("*/comment[@comment_id='$comment_id']");
-		print_r($commentEls);
+		$commentEls = $xpath->query("/comments/comment[@comment_id='$comment_id']");
+		//echo $commentEls->length, " nodes returned\n";
+
+		if ($commentEls->length != 1) {
+			if ($commentEls->length ==0 ) {
+				echo "ERROR: no comment with $comment_id found.\n";
+				return NULL;
+			} else {
+				echo "ERROR: multiple comments with the same ID returned\n";
+			}
+		}
+		
+		// Return just the first element
+		$commentEl =  $commentEls->item(0);
+		//echo $commentEl->textContent;
+		
+		$comment = array();
+		
+		//Put the attributes in
+		foreach($commentEl->attributes as $attr) {
+			$comment[$attr->name] = $attr->value;
+		}
+		
+		// Get each element
+		foreach($commentEl->childNodes as $child) {
+			//echo $child->nodeName, ": ", $child->textContent, "\n";
+			$comment[$child->nodeName] = $child->textContent;
+		}
+
+
+		print_r($comment);
+		return $comment;
 	}
 	
 	
@@ -57,7 +90,13 @@ class XmlCommentStorage {
 	protected function load() {
 		if (file_exists($this->xmlFile)) {
 			$this->dom = new DOMDocument('1.0', 'UTF-8');
-			$this->dom->load($this->xmlFile);
+			if ($this->dom->load($this->xmlFile)) {
+				//echo "XML doc read in successfully\n";
+				//echo "load DOM:", $this->dom->saveXML();
+			} else {
+				echo "ERROR reading in xml document\n";
+			}
+			
 		} else {
 			$this->initXml();
 		}
