@@ -22,8 +22,14 @@ class CommentManager {
 		return $this->storage->deleteComment($comment_id);
 	}
 	
-	public function updateComment($comment_id) {
-	
+	public function updateComment($comment) {
+		$this->initStorage();
+		if (!empty($comment['comment_id'])) {
+			return $this->storage->updateComment($comment);
+		} else {
+			echo "ERROR: No comment id for update\n";
+		}
+		return false;
 	}
 
 	public function getComments($query) {

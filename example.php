@@ -14,17 +14,28 @@ $comment = array(
 $comments = new CommentManager();
 
 echo "Adding a new comment\n";
+echo $comment['comment_id'], ': ', $comment['body'], ' (', 
+	$comment['created'], ")\n";
 $comments->addComment($comment);
 
 echo "Getting an existing comment by comment id\n";
 $c1 = $comments->getComment('99');
-echo "Existing comment published at ", $c1['created'], "\n";
+echo $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
 
 echo "Getting an existing comment by created date\n";
 $c2 = $comments->getComments(array(
 	'created' => $c1['created']
 ));
-echo "Existing comment published at ", $c2['created'], "\n";
+echo $c2['comment_id'], ': ', $c2['body'], ' (', $c2['created'], ")\n";
+
+echo "Updating an existing comment\n";
+$c1['body'] = 'Hello world plus an update';
+echo $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
+$comments->updateComment($c1);
+
+echo "Getting an existing comment by comment id\n";
+$c3 = $comments->getComment('99');
+echo $c3['comment_id'], ': ', $c3['body'], ' (', $c3['created'], ")\n";
 
 echo "Deleting an existing comment\n";
 if ($comments->deleteComment('99')) {

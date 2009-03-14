@@ -26,7 +26,6 @@ class XmlCommentStorage {
 			//echo "INFO $name: $value\n";
 			
 			// TODO: check if valid QName			
-			
 			if (strpos($name, '_id')>0) {
 				// Treat as an attribute
 				$el->setAttribute($name, $value);
@@ -43,6 +42,24 @@ class XmlCommentStorage {
 		$this->dom->documentElement->appendChild($el);
 		$this->save();
 		
+		return false;
+	}
+	
+	public function updateComment($comment) {
+		$comment_id = $comment['comment_id'];
+		$oldComment = $this->getComment($comment_id);
+		if (!empty($oldComment)) {
+			$newComment = array_merge($oldComment, $comment);
+			
+			// Delete the old comment
+			if ($this->deleteComment($comment_id)) {
+				return $this->addComment($newComment);
+			} else {
+				echo "ERROR: Could not remove the previous comment\n";
+			}
+		} else {
+			echo "ERROR: Cannot find original comment to update\n";
+		}
 		return false;
 	}
 	
@@ -157,9 +174,9 @@ class XmlCommentStorage {
 	**/
 	protected function commentToArray($commentEl) {
 		$comment = array();
+		//echo $commentEl->nodeName;
 		
 		//Put the attributes in
-		echo $commentEl->nodeName;
 		foreach($commentEl->attributes as $attr) {
 			$comment[$attr->name] = $attr->value;
 		}
