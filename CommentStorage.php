@@ -23,7 +23,7 @@ class XmlCommentStorage {
 	public function addComment($comment) {
 		$el = $this->dom->createElement('comment');
 		foreach($comment as $name=>$value) {
-			echo "INFO $name: $value\n";
+			//echo "INFO $name: $value\n";
 			
 			// TODO: check if valid QName			
 			
@@ -111,6 +111,34 @@ class XmlCommentStorage {
 		return NULL;
 	}
 	
+	/**
+	* Get a single comment by its comment_id
+	**/
+	public function deleteComment($comment_id) {
+		$xpath = new DOMXPath($this->dom);
+		
+		$commentEls = $xpath->query("/comments/comment[@comment_id='$comment_id']");
+		//echo $commentEls->length, " nodes returned\n";
+
+		if ($commentEls->length != 1) {
+			if ($commentEls->length ==0 ) {
+				echo "ERROR: no comment with comment_id $comment_id found.\n";
+				return false;
+			} else {
+				echo "ERROR: multiple comments with the same ID returned\n";
+				return false;
+			}
+		}
+		
+		// Remove element
+		$commentEl = $commentEls->item(0);
+		$commentEl->parentNode->removeChild($commentEl);
+		$this->save();
+
+		return true;
+	}
+	
+
 	/**
 	* Returns a NodeList of comment elements as an array of comments
 	**/

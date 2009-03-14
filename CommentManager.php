@@ -18,7 +18,8 @@ class CommentManager {
 	}
 	
 	public function deleteComment($comment_id) {
-	
+		$this->initStorage();
+		return $this->storage->deleteComment($comment_id);
 	}
 	
 	public function updateComment($comment_id) {
@@ -26,7 +27,7 @@ class CommentManager {
 	}
 
 	public function getComments($query) {
-		echo "INFO: getComments\n";
+		$this->initStorage();
 		return $this->storage->getComments($query);	
 	}
 

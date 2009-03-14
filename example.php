@@ -12,15 +12,23 @@ $comment = array(
 );
 
 $comments = new CommentManager();
-//$comments->addComment($comment);
 
+echo "Adding a new comment\n";
+$comments->addComment($comment);
+
+echo "Getting an existing comment by comment id\n";
 $c1 = $comments->getComment('99');
-echo "c1 created: ", $c1['created'], "\n";
+echo "Existing comment published at ", $c1['created'], "\n";
 
+echo "Getting an existing comment by created date\n";
 $c2 = $comments->getComments(array(
 	'created' => $c1['created']
 ));
+echo "Existing comment published at ", $c2['created'], "\n";
 
-print_r($c2);
+echo "Deleting an existing comment\n";
+if ($comments->deleteComment('99')) {
+	echo "Comment deleted\n";
+}
 
 ?>
