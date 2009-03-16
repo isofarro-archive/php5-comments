@@ -10,14 +10,14 @@ class XmlCommentStorage {
 	protected $xmlFile = 'comments.xml';
 	protected $dom = NULL;	
 
+	protected $commentsNode = NULL;
+	protected $usersNode    = NULL;
+
 	public function __construct() {
 		$this->load();
 	}
 	
 	public function __destruct() {
-		//if (!is_null($this->dom)) {
-		//	$this->save();
-		//}
 	}
 
 	/**
@@ -28,8 +28,8 @@ class XmlCommentStorage {
 			$comment['comment_id'] = $this->getNewCommentId();
 		} else {
 			// TODO check this comment id doesn't already exist.
+			// TODO: this should be an error
 		}
-		//echo "Index: {$comment['comment_id']}\n";
 		
 		// Set default values
 		$comment = $this->setDefaultValues(
@@ -55,9 +55,11 @@ class XmlCommentStorage {
 			}
 		}
 		
-		// Add the comment node to document
+		// Add the comment node to comments container
+		$commentsEl = $this->getCommentsNode();
+
 		// TODO: Check there's at least one attribute or element
-		$this->dom->documentElement->appendChild($el);
+		$commentsEl->appendChild($el);
 		$this->save();
 		
 		return $comment['comment_id'];
@@ -87,7 +89,9 @@ class XmlCommentStorage {
 	public function getComment($comment_id) {
 		$xpath = new DOMXPath($this->dom);
 		
-		$commentEls = $xpath->query("/comments/comment[@comment_id='$comment_id']");
+		$commentEls = $xpath->query(
+			"/storage/comments/comment[@comment_id='$comment_id']"
+		);
 		//echo $commentEls->length, " nodes returned\n";
 
 		if ($commentEls->length != 1) {
@@ -123,7 +127,7 @@ class XmlCommentStorage {
 			}
 		}
 		
-		$selector = "/comments/comment";
+		$selector = "/storage/comments/comment";
 		if (!empty($clause)) {
 			$selector .= '[' . implode(' and ', $clause) . ']';
 		}
@@ -152,7 +156,7 @@ class XmlCommentStorage {
 	public function deleteComment($comment_id) {
 		$xpath = new DOMXPath($this->dom);
 		
-		$commentEls = $xpath->query("/comments/comment[@comment_id='$comment_id']");
+		$commentEls = $xpath->query("/storage/comments/comment[@comment_id='$comment_id']");
 		//echo $commentEls->length, " nodes returned\n";
 
 		if ($commentEls->length != 1) {
@@ -190,6 +194,22 @@ class XmlCommentStorage {
 		return $index;
 	}
 
+	protected function getCommentsNode() {
+		if (empty($this->commentsNode)) {
+			$list = $this->dom->getElementsByTagName('comments');
+			$this->commentsNode = $list->item(0);
+		}
+		return $this->commentsNode;
+	}
+	
+	protected function getUsersNode() {
+		if (empty($this->usersNode)) {
+			$list = $this->dom->getElementsByTagName('users');
+			$this->userssNode = $list->item(0);
+		}
+		return $this->usersNode;
+	}
+	
 	/**
 	* Returns a NodeList of comment elements as an array of comments
 	**/
@@ -254,8 +274,17 @@ class XmlCommentStorage {
 	
 	protected function initXml() {
 		$this->dom = new DOMDocument('1.0', 'UTF-8');
+		
+		// Create a wrapper element
+		$rootEl = $this->dom->createElement('storage');
+
+		// create a comments container
 		$el = $this->dom->createElement('comments');
-		$this->dom->appendChild($el);
+		$rootEl->appendChild($el);
+		
+		// TODO: create a users container		
+		
+		$this->dom->appendChild($rootEl);
 	}
 }
 

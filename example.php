@@ -13,47 +13,48 @@ $comment = array(
 
 $comments = new CommentManager();
 
-echo "Adding a new comment\n";
+echo "1. Adding a new comment\n";
 $id = $comments->addComment($comment);
-echo $id, ': ', $comment['body'], ' (', 
+echo "   ", $id, ': ', $comment['body'], ' (', 
 	$comment['created'], ")\n";
 
-echo "Thumbs up and down a comment\n";
+echo "2. Thumbs up and down a comment\n";
 $comments->thumbsUpComment($id);
 $comments->thumbsDownComment($id);
 $comments->thumbsUpComment($id);
 $comments->thumbsDownComment($id);
 $comments->thumbsUpComment($id);
 
-echo "Getting an existing comment by comment id\n";
+echo "3. Getting an existing comment by comment id\n";
 $c1 = $comments->getComment($id);
-echo $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
+echo "   ", $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
 //print_r($c1);
 
-echo "Getting an existing comment by created date\n";
+echo "4. Getting an existing comment by created date\n";
 $c2 = $comments->getComments(array(
 	'created' => $c1['created']
 ));
-echo $c2['comment_id'], ': ', $c2['body'], ' (', $c2['created'], ")\n";
+echo "   ", $c2['comment_id'], ': ', $c2['body'], ' (', $c2['created'], ")\n";
 
-echo "Updating an existing comment\n";
+echo "5. Updating an existing comment\n";
 $c1['body'] = 'Hello world plus an update';
-echo $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
+echo "   ", $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
 $comments->updateComment($c1);
 
-echo "Getting an existing comment by comment id\n";
+echo "6. Getting an existing comment by comment id\n";
 $c3 = $comments->getComment($id);
-echo $c3['comment_id'], ': ', $c3['body'], ' (', $c3['created'], ")\n";
+echo "   ", $c3['comment_id'], ': ', $c3['body'], ' (', $c3['created'], ")\n";
 
-echo "Rejecting a comment\n";
+echo "7. Rejecting a comment\n";
 $comments->rejectComment($id);
 $c4 = $comments->getComment($id);
 print_r($c4);
 
-
-echo "Deleting an existing comment\n";
+echo "8. Deleting an existing comment\n";
 if ($comments->deleteComment($id)) {
 	echo "Comment deleted\n";
 }
+
+
 
 ?>
