@@ -5,7 +5,7 @@ require_once 'CommentStorage.php';
 
 $comment = array(
 	'article_id' => '1',
-	'comment_id' => '99',
+//	'comment_id' => '99',
 	'user_id'    => '1',
 	'body'       => 'Hello World',
 	'created'    => time()
@@ -14,12 +14,13 @@ $comment = array(
 $comments = new CommentManager();
 
 echo "Adding a new comment\n";
-echo $comment['comment_id'], ': ', $comment['body'], ' (', 
+$id = $comments->addComment($comment);
+echo $id, ': ', $comment['body'], ' (', 
 	$comment['created'], ")\n";
-$comments->addComment($comment);
+
 
 echo "Getting an existing comment by comment id\n";
-$c1 = $comments->getComment('99');
+$c1 = $comments->getComment($id);
 echo $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
 
 echo "Getting an existing comment by created date\n";
@@ -34,11 +35,11 @@ echo $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
 $comments->updateComment($c1);
 
 echo "Getting an existing comment by comment id\n";
-$c3 = $comments->getComment('99');
+$c3 = $comments->getComment($id);
 echo $c3['comment_id'], ': ', $c3['body'], ' (', $c3['created'], ")\n";
 
 echo "Deleting an existing comment\n";
-if ($comments->deleteComment('99')) {
+if ($comments->deleteComment($id)) {
 	echo "Comment deleted\n";
 }
 

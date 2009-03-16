@@ -19,8 +19,18 @@ class XmlCommentStorage {
 		//	$this->save();
 		//}
 	}
-	
+
+	/**
+	* Add a comment and return it's comment id
+	**/	
 	public function addComment($comment) {
+		if (empty($comment['comment_id'])) {
+			$comment['comment_id'] = $this->getNewCommentId();
+		} else {
+			// TODO check this comment id doesn't already exist.
+		}
+		//echo "Index: {$comment['comment_id']}\n";
+	
 		$el = $this->dom->createElement('comment');
 		foreach($comment as $name=>$value) {
 			//echo "INFO $name: $value\n";
@@ -42,7 +52,7 @@ class XmlCommentStorage {
 		$this->dom->documentElement->appendChild($el);
 		$this->save();
 		
-		return false;
+		return $comment['comment_id'];
 	}
 	
 	public function updateComment($comment) {
@@ -155,6 +165,22 @@ class XmlCommentStorage {
 		return true;
 	}
 	
+	/**
+	* Return the next comment id to use
+	**/
+	protected function getNewCommentId() {
+		$commentsEl = $this->dom->documentElement;
+		
+		$index = 0;
+		if ($commentsEl->hasAttribute('index')) {
+			$index = $commentsEl->getAttribute('index');
+		}
+		$index++;
+		
+		$commentsEl->setAttribute('index', $index);
+		
+		return $index;
+	}
 
 	/**
 	* Returns a NodeList of comment elements as an array of comments
