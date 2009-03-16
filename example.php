@@ -18,10 +18,13 @@ $id = $comments->addComment($comment);
 echo $id, ': ', $comment['body'], ' (', 
 	$comment['created'], ")\n";
 
+echo "Thumbs up a comment\n";
+$comments->thumbsUpComment($id);
 
 echo "Getting an existing comment by comment id\n";
 $c1 = $comments->getComment($id);
 echo $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
+print_r($c1);
 
 echo "Getting an existing comment by created date\n";
 $c2 = $comments->getComments(array(

@@ -30,6 +30,14 @@ class XmlCommentStorage {
 			// TODO check this comment id doesn't already exist.
 		}
 		//echo "Index: {$comment['comment_id']}\n";
+		
+		// Set default values
+		$comment = $this->setDefaultValues(
+			$comment, array(
+				'thumbsUp'   => 0,
+				'thumbsDown' => 0,
+				'rejected'   => 0
+		));
 	
 		$el = $this->dom->createElement('comment');
 		foreach($comment as $name=>$value) {
@@ -71,6 +79,26 @@ class XmlCommentStorage {
 			echo "ERROR: Cannot find original comment to update\n";
 		}
 		return false;
+	}
+
+	public function thumbsUpComment($comment_id) {
+		$comment = $this->getComment($comment_id);
+		if (empty($comment['thumbsUp'])) {
+			$comment['thumbsUp']=0;
+		}
+		$comment['thumbsUp']++;
+		
+		$this->updateComment($comment);
+	}
+	
+	
+	public function thumbsDownComment($comment_id) {
+		$comment = $this->getComment($comment_id);
+		if (empty($comment['thumbsDown'])) {
+			$comment['thumbsDown']=0;
+		}
+		$comment['thumbsDown']++;
+		$this->updateComment($comment);
 	}
 	
 	/**
@@ -214,6 +242,15 @@ class XmlCommentStorage {
 		}
 
 		return $comment;	
+	}
+	
+	protected function setDefaultValues($comment, $defaults) {
+		foreach($defaults as $name=>$value) {
+			if (empty($comment[$name])) {
+				$comment[$name] = $value;
+			}
+		}
+		return $comment;
 	}
 	
 	protected function load() {

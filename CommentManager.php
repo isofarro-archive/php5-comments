@@ -16,7 +16,18 @@ class CommentManager {
 		$this->initStorage();
 		return $this->storage->getComment($comment_id);
 	}
+
+	public function thumbsUpComment($comment_id) {
+		$this->initStorage();
+		return $this->storage->thumbsUpComment($comment_id);
+	}
 	
+	public function thumbsDownComment($comment_id) {
+		$this->initStorage();
+		return $this->storage->thumbsDownComment($comment_id);
+	}
+		
+
 	public function deleteComment($comment_id) {
 		$this->initStorage();
 		return $this->storage->deleteComment($comment_id);
