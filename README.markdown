@@ -7,11 +7,15 @@ Building blocks for a commenting system
 CommentManager API
 ------------------
 
-* `addComment($comment)`
-* `getComment($comment_id)`
-* `updateComment($comment)`
-* `deleteComment($comment)`
-* `getComments($query)`
+* `int addComment($comment)`
+* `comment getComment($comment_id)`
+* `boolean updateComment($comment)`
+* `boolean deleteComment($comment)`
+* `array getComments($query)`
+* `boolean thumbsUpComment($comment_id)`
+* `boolean thumbsDownComment($comment_id)`
+* `boolean rejectComment($comment_id)`
+
 * `addUser($user)`
 
 

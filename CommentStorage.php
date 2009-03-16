@@ -81,26 +81,6 @@ class XmlCommentStorage {
 		return false;
 	}
 
-	public function thumbsUpComment($comment_id) {
-		$comment = $this->getComment($comment_id);
-		if (empty($comment['thumbsUp'])) {
-			$comment['thumbsUp']=0;
-		}
-		$comment['thumbsUp']++;
-		
-		$this->updateComment($comment);
-	}
-	
-	
-	public function thumbsDownComment($comment_id) {
-		$comment = $this->getComment($comment_id);
-		if (empty($comment['thumbsDown'])) {
-			$comment['thumbsDown']=0;
-		}
-		$comment['thumbsDown']++;
-		$this->updateComment($comment);
-	}
-	
 	/**
 	* Get a single comment by its comment_id
 	**/

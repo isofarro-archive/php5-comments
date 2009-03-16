@@ -19,13 +19,30 @@ class CommentManager {
 
 	public function thumbsUpComment($comment_id) {
 		$this->initStorage();
-		return $this->storage->thumbsUpComment($comment_id);
+
+		$comment = $this->getComment($comment_id);
+		$comment['thumbsUp']++;
+		
+		return $this->updateComment($comment);
 	}
 	
 	public function thumbsDownComment($comment_id) {
 		$this->initStorage();
-		return $this->storage->thumbsDownComment($comment_id);
+
+		$comment = $this->getComment($comment_id);
+		$comment['thumbsDown']++;
+		
+		return $this->updateComment($comment);
 	}
+
+	public function rejectComment($comment_id) {
+		$this->initStorage();
+
+		$comment = $this->getComment($comment_id);
+		$comment['rejected'] = 1;
+		
+		return $this->updateComment($comment);
+	}	
 		
 
 	public function deleteComment($comment_id) {

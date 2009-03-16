@@ -18,13 +18,17 @@ $id = $comments->addComment($comment);
 echo $id, ': ', $comment['body'], ' (', 
 	$comment['created'], ")\n";
 
-echo "Thumbs up a comment\n";
+echo "Thumbs up and down a comment\n";
+$comments->thumbsUpComment($id);
+$comments->thumbsDownComment($id);
+$comments->thumbsUpComment($id);
+$comments->thumbsDownComment($id);
 $comments->thumbsUpComment($id);
 
 echo "Getting an existing comment by comment id\n";
 $c1 = $comments->getComment($id);
 echo $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
-print_r($c1);
+//print_r($c1);
 
 echo "Getting an existing comment by created date\n";
 $c2 = $comments->getComments(array(
@@ -40,6 +44,12 @@ $comments->updateComment($c1);
 echo "Getting an existing comment by comment id\n";
 $c3 = $comments->getComment($id);
 echo $c3['comment_id'], ': ', $c3['body'], ' (', $c3['created'], ")\n";
+
+echo "Rejecting a comment\n";
+$comments->rejectComment($id);
+$c4 = $comments->getComment($id);
+print_r($c4);
+
 
 echo "Deleting an existing comment\n";
 if ($comments->deleteComment($id)) {
