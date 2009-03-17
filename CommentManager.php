@@ -65,9 +65,36 @@ class CommentManager {
 		return $this->storage->getComments($query);	
 	}
 
-	public function getUser($user_id) {
-	
+
+
+
+	public function addUser($user) {
+		$this->initStorage();
+		// TODO: Add processing logic before saving
+		// TODO: Check the username doesn't already exist
+		
+		return $this->storage->addUser($user);
 	}
+
+	public function getUser($user_id) {
+		$this->initStorage();
+		return $this->storage->getUser($user_id);
+	}
+	
+	public function getUserByUsername($username) {
+		$this->initStorage();
+		return $this->storage->getUsers(array(
+			'username' => $username
+		));
+	}
+	
+	public function deleteUser($user_id) {
+		$this->initStorage();
+		return $this->storage->deleteUser($user_id);
+	}
+	
+
+
 	
 	
 	protected function initStorage() {

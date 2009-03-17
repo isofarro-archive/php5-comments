@@ -176,6 +176,162 @@ class XmlCommentStorage {
 
 		return true;
 	}
+
+
+
+	/**
+	* Add a user and return it's user id
+	**/	
+	public function addUser($user) {
+		if (empty($user['user_id'])) {
+			$user['user_id'] = $this->getNewUserId();
+		} else {
+			// TODO check this user id doesn't already exist.
+			// TODO: this should be an error
+		}
+		
+		// Set default values
+		$user = $this->setDefaultValues(
+			$user, array(
+				'flagged'    => 0,
+				'penalty'    => 0,
+				'created'    => time()
+		));
+	
+		$el = $this->dom->createElement('user');
+		foreach($user as $name=>$value) {
+			//echo "INFO $name: $value\n";
+			
+			// TODO: check if valid QName			
+			if (strpos($name, '_id')>0) {
+				// Treat as an attribute
+				$el->setAttribute($name, $value);
+			} else {
+				// Treat as an element
+				$dataEl = $this->dom->createElement($name);
+				$dataEl->appendChild($this->dom->createTextNode($value));
+				$el->appendChild($dataEl);
+			}
+		}
+		
+		// Add the user node to users container
+		$usersEl = $this->getUsersNode();
+
+		// TODO: Check there's at least one attribute or element
+		$usersEl->appendChild($el);
+		$this->save();
+		
+		return $user['user_id'];
+	}
+
+
+	/**
+	* Get a user by its user_id
+	**/
+	public function getUser($user_id) {
+		$xpath = new DOMXPath($this->dom);
+		
+		$userEls = $xpath->query(
+			"/storage/users/user[@user_id='$user_id']"
+		);
+		//echo $userEls->length, " nodes returned\n";
+
+		if ($userEls->length != 1) {
+			if ($userEls->length ==0 ) {
+				echo "ERROR: no user with $user_id found.\n";
+				return NULL;
+			} else {
+				echo "ERROR: multiple users with the same ID returned\n";
+			}
+		}
+		
+		// Return just the first element
+		//echo "INFO: One user found\n";
+		return $this->commentToArray($userEls->item(0));
+	}
+
+
+	/**
+	* get multiple users by a query. The query is an array
+	* of field matches, and this method returns all users
+	* that match all the conditions
+	**/
+	public function getUsers($query) {
+		// Create XPath selector for this query
+		$clause = array();
+
+		foreach($query as $name=>$value) {
+			// if the name ends with _id then its an attribute selector
+			if (preg_match('/_id$/', $name)) {
+				$clause[] = "@{$name}='$value'";
+			} else {
+				// element selector
+				$clause[] = "$name='$value'";;
+			}
+		}
+		
+		$selector = "/storage/users/user";
+		if (!empty($clause)) {
+			$selector .= '[' . implode(' and ', $clause) . ']';
+		}
+		
+		//echo "SELECTOR: $selector\n";
+
+		$xpath      = new DOMXPath($this->dom);
+		$userEls = $xpath->query($selector);
+		//echo "Number of users: ", $userEls->length, "\n";
+
+		if ($userEls->length == 0) {
+			echo "INFO: No users found\n";
+		} elseif ($userEls->length==1) {
+			//echo "INFO: One user found\n";
+			return $this->commentToArray($userEls->item(0));
+		} else {
+			echo "INFO: Multiple users found\n";
+			return $this->commentsToArray($userEls);
+		}
+		return NULL;
+	}
+
+	/**
+	* Delete a user by its comment_id
+	**/
+	public function deleteUser($user_id) {
+		$xpath = new DOMXPath($this->dom);
+		
+		$userEls = $xpath->query("/storage/users/user[@user_id='$user_id']");
+		//echo $userEls->length, " nodes returned\n";
+
+		if ($userEls->length != 1) {
+			if ($userEls->length ==0 ) {
+				echo "ERROR: no user with user_id $user_id found.\n";
+				return false;
+			} else {
+				echo "ERROR: multiple users with the same ID returned\n";
+				return false;
+			}
+		}
+		
+		// Remove element
+		$userEl = $userEls->item(0);
+		$userEl->parentNode->removeChild($userEl);
+		$this->save();
+
+		return true;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	/**
 	* Return the next comment id to use
@@ -222,7 +378,7 @@ class XmlCommentStorage {
 	protected function getUsersNode() {
 		if (empty($this->usersNode)) {
 			$list = $this->dom->getElementsByTagName('users');
-			$this->userssNode = $list->item(0);
+			$this->usersNode = $list->item(0);
 		}
 		return $this->usersNode;
 	}
