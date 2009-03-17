@@ -181,15 +181,32 @@ class XmlCommentStorage {
 	* Return the next comment id to use
 	**/
 	protected function getNewCommentId() {
-		$commentsEl = $this->dom->documentElement;
+		$commentsEl = $this->getCommentsNode();
 		
 		$index = 0;
-		if ($commentsEl->hasAttribute('index')) {
-			$index = $commentsEl->getAttribute('index');
+		if ($commentsEl->hasAttribute('commentsIdx')) {
+			$index = $commentsEl->getAttribute('commentsIdx');
 		}
 		$index++;
 		
-		$commentsEl->setAttribute('index', $index);
+		$commentsEl->setAttribute('commentsIdx', $index);
+		
+		return $index;
+	}
+
+	/**
+	* Return the next user_id to use
+	**/
+	protected function getNewUserId() {
+		$usersEl = $this->getUsersNode();
+		
+		$index = 0;
+		if ($usersEl->hasAttribute('usersIdx')) {
+			$index = $usersEl->getAttribute('usersIdx');
+		}
+		$index++;
+		
+		$usersEl->setAttribute('usersIdx', $index);
 		
 		return $index;
 	}
@@ -282,7 +299,9 @@ class XmlCommentStorage {
 		$el = $this->dom->createElement('comments');
 		$rootEl->appendChild($el);
 		
-		// TODO: create a users container		
+		// Create a users container		
+		$el = $this->dom->createElement('users');
+		$rootEl->appendChild($el);
 		
 		$this->dom->appendChild($rootEl);
 	}
