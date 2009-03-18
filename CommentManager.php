@@ -6,6 +6,32 @@ class CommentManager {
 	public function addComment($comment) {
 		$this->initStorage();
 		
+		// Check whether there's user data attached
+		if (!empty($comment['user'])) {
+			echo "INFO: User details found\n";
+			if (!empty($comment['user']['username'])) {
+				$user = $this->getUserByUsername($comment['user']['username']);
+				if(!is_null($user)) {
+					echo "INFO: User "; print_r($user);
+					unset($comment['user']);
+					$comment['user_id'] = $user['user_id'];
+				} else {
+					// This is a new user
+					$user_id = $this->addUser($comment['user']);
+					if ($user_id) {
+						echo "INFO: Added a new user $user_id\n";
+						unset($comment['user']);
+						$comment['user_id'] = $user_id;
+					} else {
+						echo "ERROR: Can't add user\n";
+					}
+				}
+			} else {
+				echo "ERROR: no username\n";
+				return NULL;
+			}
+		}
+		
 		// TODO: Add processing logic before saving
 		
 		return $this->storage->addComment($comment);

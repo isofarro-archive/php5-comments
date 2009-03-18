@@ -6,7 +6,10 @@ require_once 'CommentStorage.php';
 $comment = array(
 	'article_id' => '1',
 //	'comment_id' => '99',
-	'user_id'    => '1',
+//	'user_id'    => '1',
+	'user'       => array(
+		'username' => 'joebloggs'
+	),
 	'body'       => 'Hello World',
 	'created'    => time()
 );
@@ -18,18 +21,21 @@ $id = $comments->addComment($comment);
 echo "   ", $id, ': ', $comment['body'], ' (', 
 	$comment['created'], ")\n";
 
+/****
 echo "2. Thumbs up and down a comment\n";
 $comments->thumbsUpComment($id);
 $comments->thumbsDownComment($id);
 $comments->thumbsUpComment($id);
 $comments->thumbsDownComment($id);
 $comments->thumbsUpComment($id);
+****/
 
 echo "3. Getting an existing comment by comment id\n";
 $c1 = $comments->getComment($id);
 echo "   ", $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
-//print_r($c1);
+print_r($c1);
 
+/****
 echo "4. Getting an existing comment by created date\n";
 $c2 = $comments->getComments(array(
 	'created' => $c1['created']
@@ -54,7 +60,7 @@ echo "8. Deleting an existing comment\n";
 if ($comments->deleteComment($id)) {
 	echo "Comment deleted\n";
 }
-
+****/
 
 
 ?>
