@@ -21,21 +21,18 @@ $id = $comments->addComment($comment);
 echo "   ", $id, ': ', $comment['body'], ' (', 
 	$comment['created'], ")\n";
 
-/****
 echo "2. Thumbs up and down a comment\n";
 $comments->thumbsUpComment($id);
 $comments->thumbsDownComment($id);
 $comments->thumbsUpComment($id);
 $comments->thumbsDownComment($id);
 $comments->thumbsUpComment($id);
-****/
 
 echo "3. Getting an existing comment by comment id\n";
 $c1 = $comments->getComment($id);
 echo "   ", $c1['comment_id'], ': ', $c1['body'], ' (', $c1['created'], ")\n";
-print_r($c1);
+//print_r($c1);
 
-/****
 echo "4. Getting an existing comment by created date\n";
 $c2 = $comments->getComments(array(
 	'created' => $c1['created']
@@ -54,13 +51,12 @@ echo "   ", $c3['comment_id'], ': ', $c3['body'], ' (', $c3['created'], ")\n";
 echo "7. Rejecting a comment\n";
 $comments->rejectComment($id);
 $c4 = $comments->getComment($id);
-print_r($c4);
+//print_r($c4);
 
 echo "8. Deleting an existing comment\n";
 if ($comments->deleteComment($id)) {
-	echo "Comment deleted\n";
+	echo "   Comment deleted\n";
 }
-****/
 
 
 ?>
