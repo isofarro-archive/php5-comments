@@ -15,8 +15,7 @@ Usage:
 			'username' => 'joebloggs'
 		)
 	);
-	$manager->addComment($comment);	
-	
+	$comment_id = $manager->addComment($comment);
 	
 	// Adding a user
 	$user = array(
@@ -28,6 +27,25 @@ Additional fields/data can be tacked on to the comment and user arrays
 just by adding them as simple name/value pairs in their respective
 arrays. (As long as value is just a simple string, it will get stored
 automatically).
+
+	$manage = new CommentManager();
+
+	// Get all the comments for a specific article
+	$comments = $manager->getArticleComments(
+		'http://www.example.org/article/hello-world.html'
+	);
+	
+	// Get all the comments for a particular user
+	$comments = $manager->getUserComments('joebloggs');
+
+	// Thumbs up a comment
+	$comment_id = $comments[0]['comment_id'];
+	$manager->thumbsUpComment($comment_id);
+
+	// Flag the user
+	$user_id = $comments[0]['user']['userid'];
+	$manager->flagUser($user_id);
+
 
 
 CommentManager API
