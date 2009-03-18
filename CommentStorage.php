@@ -139,7 +139,7 @@ class XmlCommentStorage {
 		//echo "Number of comments: ", $commentEls->length, "\n";
 
 		if ($commentEls->length == 0) {
-			echo "INFO: No comments found\n";
+			//echo "INFO: No comments found\n";
 		} elseif ($commentEls->length==1) {
 			//echo "INFO: One comment found\n";
 			return $this->commentToArray($commentEls->item(0));
@@ -282,12 +282,12 @@ class XmlCommentStorage {
 		//echo "Number of users: ", $userEls->length, "\n";
 
 		if ($userEls->length == 0) {
-			echo "INFO: No users found\n";
+			//echo "INFO: No users found\n";
 		} elseif ($userEls->length==1) {
 			//echo "INFO: One user found\n";
 			return $this->commentToArray($userEls->item(0));
 		} else {
-			echo "INFO: Multiple users found\n";
+			//echo "INFO: Multiple users found\n";
 			return $this->commentsToArray($userEls);
 		}
 		return NULL;
@@ -319,6 +319,26 @@ class XmlCommentStorage {
 
 		return true;
 	}
+
+
+	public function updateUser($user) {
+		$user_id = $user['user_id'];
+		$oldUser = $this->getUser($user_id);
+		if (!empty($oldUser)) {
+			$newUser = array_merge($oldUser, $user);
+			
+			// Delete the old user
+			if ($this->deleteUser($user_id)) {
+				return $this->addUser($newUser);
+			} else {
+				echo "ERROR: Could not remove the previous user\n";
+			}
+		} else {
+			echo "ERROR: Cannot find original user to update\n";
+		}
+		return false;
+	}
+
 
 	
 	/**

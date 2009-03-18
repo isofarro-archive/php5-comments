@@ -21,6 +21,8 @@ CommentManager API
 * `User getUser($user_id)`
 * `User getUserByUsername($username)`
 * `boolean deleteUser($user_id)`
+* `boolean flagUser($user_id)`
+* `boolean penaliseUser($user_id, $weight)`
 
 
 

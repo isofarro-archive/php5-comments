@@ -160,6 +160,50 @@ class CommentManager {
 		return $this->storage->deleteUser($user_id);
 	}
 	
+	/**
+	*	Update the specified user with the specified data
+	**/
+	public function updateUser($user) {
+		$this->initStorage();
+		if (!empty($user['user_id'])) {
+			return $this->storage->updateUser($user);
+		} else {
+			echo "ERROR: No user id for update\n";
+		}
+		return false;
+	}
+	
+	/**
+	*	Set the user as flagged
+	**/
+	public function flagUser($user_id) {
+		$this->initStorage();
+		$user = $this->getUser($user_id);
+		$user['flagged'] = 1;
+		return $this->updateUser($user);
+	}
+	
+	/**
+	*	Increase the penalty weight for a specified user
+	**/
+	public function penaliseUser($user_id, $weight=1) {
+		$this->initStorage();
+		$user = $this->getUser($user_id);
+		$user['penalty'] += $weight;
+		return $this->updateUser($user);
+	}
+
+	/**
+	*	Set a specified score specified user
+	**/
+	public function scoreUser($user_id, $score=1) {
+		$this->initStorage();
+		$user = $this->getUser($user_id);
+		$user['score'] = $score;
+		return $this->updateUser($user);
+	}
+
+
 
 	/**
 	*	Replace an id references in a comment with the actual data.
