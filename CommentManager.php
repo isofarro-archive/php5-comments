@@ -3,6 +3,10 @@
 class CommentManager {
 	protected $storage;
 
+	/**
+	*	Adds a new comment to storage. Comment is an array.
+	*	Returns the comment_id of the new comment
+	**/
 	public function addComment($comment) {
 		$this->initStorage();
 
@@ -16,12 +20,19 @@ class CommentManager {
 				
 	}
 	
+	/**
+	*	Gets the comment with the supplied comment_id.
+	* 	Returns comment as an array, or NULL
+	**/
 	public function getComment($comment_id) {
 		$this->initStorage();
 		$comment = $this->storage->getComment($comment_id);
 		return $this->hydrateComment($comment);
 	}
 
+	/**
+	*	Thumbs up the specified comment
+	**/
 	public function thumbsUpComment($comment_id) {
 		$this->initStorage();
 
@@ -31,6 +42,9 @@ class CommentManager {
 		return $this->updateComment($comment);
 	}
 	
+	/**
+	*	Thumbs down the specified comment
+	**/
 	public function thumbsDownComment($comment_id) {
 		$this->initStorage();
 
@@ -40,6 +54,9 @@ class CommentManager {
 		return $this->updateComment($comment);
 	}
 
+	/**
+	*	Set the reject flag of the specified comment
+	**/
 	public function rejectComment($comment_id) {
 		$this->initStorage();
 
@@ -49,12 +66,18 @@ class CommentManager {
 		return $this->updateComment($comment);
 	}	
 		
-
+	/**
+	*	Delete the specified comment
+	**/
 	public function deleteComment($comment_id) {
 		$this->initStorage();
 		return $this->storage->deleteComment($comment_id);
 	}
 	
+	/**
+	*	Replace the existing comment with the specified comment data
+	*	The replacing comment is an array.
+	**/
 	public function updateComment($comment) {
 		$this->initStorage();
 		if (!empty($comment['comment_id'])) {
@@ -66,12 +89,43 @@ class CommentManager {
 		return false;
 	}
 
+	/**
+	*	Get comment by Search-by-example. Parameter is an
+	*	array of attributes the comment must match
+	**/
 	public function getComments($query) {
 		$this->initStorage();
 		$comments = $this->storage->getComments($query);
 		return $this->hydrateComments($comments);
 	}
+	
+	/**
+	*	Get all the comments for a particular article
+	**/
+	public function getArticleComments($article_id) {
+		return $this->getComments(array(
+			'article_id' => $article_id
+		));
+	}
 
+	/**
+	*	Get all the comments for a particular user
+	**/
+	public function getUserComments($username) {
+		$user = $this->getUserByUsername($username);
+		if ($user) {
+			return $this->getComments(array(
+				'user_id' => $user['user_id']
+			));
+		} else {
+			echo "WARN: No such user found\n";
+			return NULL;
+		}	
+	}
+
+	/**
+	*	Add a new user to our storage. User is an array.
+	**/
 	public function addUser($user) {
 		$this->initStorage();
 		// TODO: Add processing logic before saving
@@ -80,11 +134,17 @@ class CommentManager {
 		return $this->storage->addUser($user);
 	}
 
+	/**
+	*	Get the user details given the user_id
+	**/
 	public function getUser($user_id) {
 		$this->initStorage();
 		return $this->storage->getUser($user_id);
 	}
-	
+
+	/**
+	*	Get the user details of the specified username
+	**/
 	public function getUserByUsername($username) {
 		$this->initStorage();
 		return $this->storage->getUsers(array(
@@ -92,12 +152,18 @@ class CommentManager {
 		));
 	}
 	
+	/**
+	*	Delete the specified user
+	**/
 	public function deleteUser($user_id) {
 		$this->initStorage();
 		return $this->storage->deleteUser($user_id);
 	}
 	
 
+	/**
+	*	Replace an id references in a comment with the actual data.
+	**/
 	protected function hydrateComment($comment) {
 		// Replace user_id with user details
 		if (!empty($comment['user_id'])) {
@@ -111,6 +177,10 @@ class CommentManager {
 		return $comment;
 	}
 	
+	/**
+	*	Replace an id references of a list of comments
+	*  with the actual data.
+	**/
 	protected function hydrateComments($comments) {
 		if (!empty($comments['comment_id'])) {
 			// Single comment
@@ -126,6 +196,9 @@ class CommentManager {
 		return $comments;
 	}
 
+	/**
+	*	Replaces data structures in a comment with id references.
+	**/
 	protected function dehydrateComment($comment) {
 		// Check whether there's user data attached
 		if (!empty($comment['user'])) {
