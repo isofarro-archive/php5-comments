@@ -144,7 +144,7 @@ class XmlCommentStorage {
 			//echo "INFO: One comment found\n";
 			return $this->commentToArray($commentEls->item(0));
 		} else {
-			echo "INFO: Multiple comments found\n";
+			//echo "INFO: Multiple comments found\n";
 			return $this->commentsToArray($commentEls);
 		}
 		return NULL;
@@ -320,18 +320,6 @@ class XmlCommentStorage {
 		return true;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
 	
 	/**
 	* Return the next comment id to use
@@ -389,7 +377,9 @@ class XmlCommentStorage {
 	protected function commentsToArray($commentEls) {
 		$comments = array();
 		
-		foreach($commentEls->childNodes as $commentEl) {
+		//foreach($commentEls->childNodes as $commentEl) {
+		for($i=0; $i < $commentEls->length; $i++) {
+			$commentEl = $commentEls->item($i);
 			$comments[] = $this->commentToArray($commentEl);
 		}
 		
