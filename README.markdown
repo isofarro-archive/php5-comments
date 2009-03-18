@@ -8,15 +8,20 @@ CommentManager API
 ------------------
 
 * `int addComment($comment)`
-* `comment getComment($comment_id)`
+* `Comment getComment($comment_id)`
+* `array getComments($query)`
+* `array getArticleComments($articleUrl)`
+* `array getUserComments($username)`
 * `boolean updateComment($comment)`
 * `boolean deleteComment($comment)`
-* `array getComments($query)`
 * `boolean thumbsUpComment($comment_id)`
 * `boolean thumbsDownComment($comment_id)`
 * `boolean rejectComment($comment_id)`
+* `int addUser($user)`
+* `User getUser($user_id)`
+* `User getUserByUsername($username)`
+* `boolean deleteUser($user_id)`
 
-* `addUser($user)`
 
 
 
