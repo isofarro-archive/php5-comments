@@ -3,6 +3,32 @@ Comments
 
 Building blocks for a commenting system
 
+Usage:
+
+	$manager = new CommentManager();
+
+	// Adding a comment
+	$comment = array(
+		'article_id' => 'http://www.example.org/article/hello-world.html',
+		'body'       => 'frist post!!',
+		'user'       => array(
+			'username' => 'joebloggs'
+		)
+	);
+	$manager->addComment($comment);	
+	
+	
+	// Adding a user
+	$user = array(
+		'username' => 'joebloggs'
+	);
+	$user_id = $manager->addUser($user);
+	
+Additional fields/data can be tacked on to the comment and user arrays
+just by adding them as simple name/value pairs in their respective
+arrays. (As long as value is just a simple string, it will get stored
+automatically).
+
 
 CommentManager API
 ------------------
