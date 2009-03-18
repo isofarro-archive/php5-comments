@@ -26,9 +26,24 @@ Usage:
 Additional fields/data can be tacked on to the comment and user arrays
 just by adding them as simple name/value pairs in their respective
 arrays. (As long as value is just a simple string, it will get stored
-automatically).
+automatically). For example:
 
-	$manage = new CommentManager();
+	$comment = array(
+		'article_id' => 'http://www.example.org/article/hello-world.html',
+		'body'       => 'frist post!!',
+		'user'       => array(
+			'username' => 'joebloggs'
+		),
+		
+		// Extra comment data
+		'articleCategory' => 'football'
+	);
+	$comment_id = $manager->addComment($comment);
+
+
+Getting the list of comments for each article and user:
+
+	$manager = new CommentManager();
 
 	// Get all the comments for a specific article
 	$comments = $manager->getArticleComments(
