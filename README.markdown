@@ -23,6 +23,7 @@ CommentManager API
 * `boolean deleteUser($user_id)`
 * `boolean flagUser($user_id)`
 * `boolean penaliseUser($user_id, $weight)`
+* `boolean scoreUser($user_id, $score)`
 
 
 
