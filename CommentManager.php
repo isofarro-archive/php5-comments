@@ -109,6 +109,46 @@ class CommentManager {
 	}
 
 	/**
+	*	Get all the comments for a particular article
+	*  in a threaded order
+	**/
+	public function getThreadedArticleComments($article_id, $depth=1) {
+		$comments = $this->getComments(array(
+			'article_id' => $article_id
+		));
+		
+		$replyList = array(
+			'0' => array()		
+		);
+		
+		foreach($comments as $comment) {
+			if (empty($comment['replyto_id'])) {
+				array_push($replyList[0], $comment);
+			} else {
+				$replyId = $comment['replyto_id'];
+				if (empty($replyList[$replyId])) {
+					$replyList[$replyId] = array();
+				}
+				array_push($replyList[$replyId], $comment);
+			}
+		}
+		
+		$sortedComments = array();
+		foreach($replyList[0] as $comment) {
+			// Put the comment in
+			$sortedComments[] = $comment;
+			
+			// Put all replies in
+			$replyId = $comment['comment_id'];
+			if (!empty($replyList[$replyId])) {
+				$sortedComments = array_merge($sortedComments, $replyList[$replyId]);
+			}
+		}
+				
+		return $sortedComments;
+	}
+
+	/**
 	*	Get all the comments for a particular user
 	**/
 	public function getUserComments($username) {
